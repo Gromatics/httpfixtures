@@ -31,6 +31,7 @@ php artisan make:http-fixture
 ```
 
 The command will guide you through the process:
+
 1.1 First, it asks for a fixture name:
 ```
  What is the class name of the HTTP Fixture? (e.g., StripeFixture, GoogleFixture):

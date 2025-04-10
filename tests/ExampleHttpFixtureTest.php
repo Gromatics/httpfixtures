@@ -17,10 +17,5 @@ it('updates a key in the definition', function () {
 it('updates a key in the definition with dot notation', function () {
     $name = 'Harry Ole';
     $fixture = new ExampleHttpFixture(['items.0.name' => $name]);
-
-
-    dd(json_encode($fixture->toArray()));
-
-
     expect($fixture->toArray()['items'][0]['name'])->toBe($name);
 });

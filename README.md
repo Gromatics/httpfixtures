@@ -2,6 +2,28 @@
 
 This package helps you create mock HTTP responses for Laravel tests. It combines Laravel's `Http::fake` functionality with Faker data generation to create realistic test data in a format similar to Laravel factories.
 
+### Using in Tests
+Implement the fixture in your Laravel tests like this:
+
+```
+$fixture = new ExampleHttpFixture()
+
+Http::preventStrayRequests();
+Http::fake([
+    "https://www.example.com/get-user/harry" => Http::response($fixture->toJson(), 200),
+]);
+```
+
+This setup will:
+1. Create a new fixture instance
+2. Prevent any unexpected HTTP requests
+3. Return your mock response when the specified URL is called
+
+The package helps you create consistent, realistic test data while maintaining control over specific values you need to test against.
+
+
+
+
 ## Create a fixture
 
 There are two ways to create a fixture:
@@ -99,25 +121,6 @@ This will return something similar to this
         }
 }
 ```
-### Using in Tests
-Implement the fixture in your Laravel tests like this:
-
-```
-$fixture = new ExampleHttpFixture()
-
-Http::preventStrayRequests();
-Http::fake([
-    "https://www.example.com/get-user/harry" => Http::response($fixture->toJson(), 200),
-]);
-```
-
-This setup will:
-1. Create a new fixture instance
-2. Prevent any unexpected HTTP requests
-3. Return your mock response when the specified URL is called
-
-The package helps you create consistent, realistic test data while maintaining control over specific values you need to test against.
-
 
 
 

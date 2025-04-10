@@ -1,0 +1,31 @@
+{
+    "name": "gromatics/http-fixtures",
+    "description": "A Laravel package that generates fake JSON responses for HTTP testing using Http::fake(). It simplifies the creation of mock HTTP responses by integrating with FakerPHP to generate realistic test data.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "fakerphp/faker": ">=1",
+        "laravel/framework": ">=11"
+    },
+    "require-dev": {
+        "pestphp/pest": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Gromatics\\Httpfixtures\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Gromatics\\HttpFixtures\\HttpFixturesServiceProvider"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "Guido rus",
+            "email": "guido@gromatics.nl"
+        }
+    ]
+}

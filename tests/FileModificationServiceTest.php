@@ -62,8 +62,7 @@ it('should copy ExampleHttpFixture and set definitions according /Fixtures/strip
     $definition = $instance->definition();
     expect($definition)->toHaveKeys(['object', 'amount', 'charges']);
 
-    expect($definition['charges']['data'][0]['status'])->not()->toBe("succeeded");
-    expect($definition['charges']['data'][0]['status'])->not()->toBeNull();
+    expect($definition['charges']['data'][0]['status'])->toBe("succeeded");
     expect($definition['receipt_email'])->not()->toBe('jenny.rosen@example.com');
     expect(filter_var($definition['receipt_email'], FILTER_VALIDATE_EMAIL))->not()->toBeFalse();
 

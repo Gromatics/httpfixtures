@@ -1,1 +1,39 @@
-{"id": "pi_3NLxg2L1ZLzhUeQv0EXAMPLE", "object": "payment_intent", "amount": 2000, "amount_capturable": 0, "amount_received": 2000, "currency": "usd", "customer": "cus_Nv1EXAMPLE1", "description": "T-shirt order", "status": "succeeded", "payment_method": "pm_1NLxhHL1ZLzhUeQv1EXAMPLE", "receipt_email": "jenny.rosen@example.com", "created": 1712700000, "charges": {"object": "list", "data": [{"id": "ch_3NLxg2L1ZLzhUeQv0lEXAMPLE", "object": "charge", "amount": 2000, "currency": "usd", "status": "succeeded", "payment_method_details": {"card": {"brand": "visa", "last4": "4242", "exp_month": 12, "exp_year": 2026}, "type": "card"}, "receipt_url": "https://pay.stripe.com/receipts/acct_1EXAMPLE/rcpt_EXAMPLE"}], "has_more": false, "total_count": 1, "url": "/v1/charges?payment_intent=pi_3NLxg2L1ZLzhUeQv0EXAMPLE"}}
+{
+    "id": "pi_3NLxg2L1ZLzhUeQv0EXAMPLE",
+    "object": "payment_intent",
+    "amount": 2000,
+    "amount_capturable": 0,
+    "amount_received": 2000,
+    "currency": "usd",
+    "customer": "cus_Nv1EXAMPLE1",
+    "description": "T-shirt order",
+    "status": "succeeded",
+    "payment_method": "pm_1NLxhHL1ZLzhUeQv1EXAMPLE",
+    "receipt_email": "jenny.rosen@example.com",
+    "created": 1712700000,
+    "charges": {
+        "object": "list",
+        "data": [
+            {
+                "id": "ch_3NLxg2L1ZLzhUeQv0lEXAMPLE",
+                "object": "charge",
+                "amount": 2000,
+                "currency": "usd",
+                "status": "succeeded",
+                "payment_method_details": {
+                    "card": {
+                        "brand": "visa",
+                        "last4": "4242",
+                        "exp_month": 12,
+                        "exp_year": 2026
+                    },
+                    "type": "card"
+                },
+                "receipt_url": "https://pay.stripe.com/receipts/acct_1EXAMPLE/rcpt_EXAMPLE"
+            }
+        ],
+        "has_more": false,
+        "total_count": 1,
+        "url": "/v1/charges?payment_intent=pi_3NLxg2L1ZLzhUeQv0EXAMPLE"
+    }
+}

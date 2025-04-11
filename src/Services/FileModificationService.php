@@ -3,6 +3,8 @@
 
 namespace Gromatics\HttpFixtures\Services;
 
+use Illuminate\Support\Str;
+
 class FileModificationService
 {
 
@@ -69,15 +71,16 @@ class FileModificationService
             throw new \Exception('Invalid JSON provided: ' . $e->getMessage());
         }
 
-        if(!$useFaker) {
+        if (!$useFaker) {
             //Remove everything between  return [ and ] and replace with array;
-            return  preg_replace('/return \[\s*(.*?)\s*\];/s', 'return ' . self::exportArray($arr) . ';', $content);
+            return preg_replace('/return \[\s*(.*?)\s*\];/s', 'return ' . self::exportArray($arr) . ';', $content);
         }
         return preg_replace('/return \[\s*(.*?)\s*\];/s', 'return ' . self::exportArrayWithFaker($arr) . ';', $content);
     }
 
     //Replace array() with []
-    private static function exportArray($arr) {
+    private static function exportArray($arr)
+    {
         $export = var_export($arr, true);
         $patterns = [
             "/array \(/i" => '[',
@@ -88,32 +91,87 @@ class FileModificationService
         return preg_replace(array_keys($patterns), array_values($patterns), $export);
     }
 
-    private static function replaceArrayWithFakerTypes(array $arr): array {
+    private static function replaceArrayWithFakerTypes(array $arr): array
+    {
         $result = [];
         foreach ($arr as $key => $value) {
             if (is_array($value)) {
                 $result[$key] = self::replaceArrayWithFakerTypes($value);
             } else {
-                $result[$key] = self::determineTypeFaker($value);
+                $result[$key] = self::determineTypeFaker($key, $value);
             }
         }
         return $result;
     }
 
-    private static function determineTypeFaker(mixed $value): string {
-        return match(true) {
-            is_numeric($value) => '$this->faker->numberBetween(1, 1000)',
-            filter_var($value, FILTER_VALIDATE_URL) !== false => '$this->faker->url',
-            is_string($value) && preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $value) => '$this->faker->hexColor',
-            is_string($value) && preg_match('/^[A-Z]{3}$/', $value) => '$this->faker->currencyCode',
-            is_string($value) && filter_var($value, FILTER_VALIDATE_EMAIL) !== false => '$this->faker->email',
-            is_string($value) && preg_match('/^[a-z]{2}_[A-Z]{2}$/', $value) => '$this->faker->locale',
-            is_string($value) && str_word_count($value) > 0 => '$this->faker->sentence(' . str_word_count($value) . ')',
-            default => '$this->faker->word()'
-        };
+    private static function determineTypeFaker(mixed $key, mixed $value): string
+    {
+        $key = strtolower($key);
+        switch (true) {
+            case $key === 'id':
+                return '$this->faker->numberBetween(100000, 999999)';
+            case $key === 'identifier':
+                return 'Str::random(20)';
+            case str_contains($key, 'firstname'):
+            case str_contains($key, 'first_name'):
+                return '$this->faker->firstName()';
+            case str_contains($key, 'lastname'):
+            case str_contains($key, 'last_name'):
+                return '$this->faker->lastName()';
+            case str_contains($key, 'name'):
+                return '$this->faker->name()';
+            case str_contains($key, 'company'):
+            case str_contains($key, 'organisation'):
+            case str_contains($key, 'business'):
+                return '$this->faker->company()';
+            case str_contains($key, 'address'):
+                return '$this->faker->address()';
+            case str_contains($key, 'zipcode'):
+            case str_contains($key, 'postcode'):
+            case str_contains($key, 'postalcode'):
+            case str_contains($key, 'postal_code'):
+                return '$this->faker->postcode()';
+            case str_contains($key, 'city'):
+            case str_contains($key, 'locality'):
+                return '$this->faker->city()';
+            case str_contains($key, 'state'):
+                return '$this->faker->state()';
+            case str_contains($key, 'country'):
+                return '$this->faker->countryCode()';
+            case str_contains($key, 'email'):
+                return '$this->faker->email()';
+            case str_contains($key, 'phone'):
+                return '$this->faker->phoneNumber()';
+            case str_contains($key, 'url'):
+            case str_contains($key, 'href'):
+            case str_contains($key, 'link'):
+                return '$this->faker->url()';
+            case str_contains($key, 'description'):
+                return '$this->faker->sentence()';
+            case str_contains($key, 'title'):
+                return '$this->faker->words(3, true)';
+            case str_contains($key, 'amount'):
+                return '$this->faker->numberBetween(100, 10000)';
+            case str_contains($key, 'currency'):
+                return '$this->faker->currencyCode()';
+            case str_contains($key, 'year'):
+                return '$this->faker->year()';
+            case str_contains($key, 'status'):
+                return $value;
+            case is_bool($value):
+                return '$this->faker->boolean()';
+            case is_numeric($value):
+                return '$this->faker->numberBetween(10, 10000)';
+            case is_string($value) && str_contains($value, ' '):
+                $wordCount = substr_count($value, ' ') + 1;
+                return '$this->faker->sentence(' . $wordCount . ')';
+            default:
+                return '$this->faker->word()';
+        }
     }
 
-    private static function exportArrayWithFaker(array $arr): string {
+    private static function exportArrayWithFaker(array $arr): string
+    {
         $arr = self::replaceArrayWithFakerTypes($arr);
 
         // Convert array to string representation
@@ -131,7 +189,6 @@ class FileModificationService
 
         return preg_replace(array_keys($patterns), array_values($patterns), $export);
     }
-
 
 
 }

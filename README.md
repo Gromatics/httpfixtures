@@ -7,8 +7,8 @@ This package helps you create mock HTTP responses for Laravel tests. It combines
 ```
 composer require gromatics/http-fixtures --dev
 ```
-That's all you need to install the package as a development dependency in your Laravel project.
 
+That's all you need to install the package as a development dependency in your Laravel project.
 
 # Using in Tests
 
@@ -23,13 +23,8 @@ Http::fake([
 ]);
 ```
 
-This setup will:
-
-1. Prevent any unexpected HTTP requests.
-2. Create a new fixture instance.
-3. Return your mock response when the specified URL is called.
-
-The package helps you create consistent, realistic test data while maintaining control over specific values you need to test against.
+This sets up a mock HTTP response for testing in Laravel by creating an instance of `ExampleHttpFixture` that generates fake data using Laravel's Faker library. `Http::fake()` is used to intercept real HTTP requests and replace them with
+predetermined fake responses during testing. The code specifically mocks requests to "[https://www.example.com/get-user/harry](https://www.example.com/get-user/harry)", returning a JSON response created by the fixture with a 200 (OK) status code.
 
 # Creating a Fixture
 
@@ -54,7 +49,6 @@ Want to paste a JSON response and turn it into a fixture? (yes/no) [no]:
 ```
 
 Now you have a fixture in tests/Fixtures called `SuperApiResponseFixture.php`.
-
 
 ### 2. Manually Creating a File
 
@@ -140,9 +134,11 @@ You can use dot notation to update nested values:
 ```php
 $fixture = (new ExampleHttpFixture(['items.0.name' => 'John Doe']))->toJson();
 ```
+
 This will produce a response where the first item's name is set to "John Doe".
 
 ### XML
+
 You can also generate an XML output like this:
 
 ```php
@@ -158,25 +154,25 @@ This will return a XML response similar to:
 ```xml
 <?xml version="1.0"?>\n
 <yourRootElement>
-	<status>OK</status>
-	<message>Voluptatum fugit aspernatur non.</message>
-	<items>
-		<item>
-			<identifier>6zzzWFhmyRyPZwoYa6b8</identifier>
-			<name>Schiller, Gislason and Reynolds</name>
-			<address>5708 Lockman Gardens Armstronghaven, FL 32188</address>
-			<postcode>87862-9490</postcode>
-			<city>North Sabrina</city>
-			<country>Romania</country>
-			<phone>(346) 871-2661</phone>
-			<email>marion66@yahoo.com</email>
-		</item>
-	</items>
+    <status>OK</status>
+    <message>Voluptatum fugit aspernatur non.</message>
+    <items>
+        <item>
+            <identifier>6zzzWFhmyRyPZwoYa6b8</identifier>
+            <name>Schiller, Gislason and Reynolds</name>
+            <address>5708 Lockman Gardens Armstronghaven, FL 32188</address>
+            <postcode>87862-9490</postcode>
+            <city>North Sabrina</city>
+            <country>Romania</country>
+            <phone>(346) 871-2661</phone>
+            <email>marion66@yahoo.com</email>
+        </item>
+    </items>
 </yourRootElement>
 ```
 
-
 # Use JSON object to create fixture
+
 The command will guide you through the process:
 
 Run the following command:
@@ -207,6 +203,7 @@ Give the path to your JSON file:
 ```
 
 stripe-fixture.json
+
 ```json
 {
     "id": "pi_3NLxg2L1ZLzhUeQv0EXAMPLE",

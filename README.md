@@ -195,6 +195,11 @@ Want to paste a JSON response and turn it into a fixture? (yes/no) [no]:
 
 Paste your minified JSON object (example below uses a Stripe response):
 
+```plaintext
+Paste your JSON response object here.:
+> {"id: "pi_3NL....
+```
+
 ```json
 {
     "id": "pi_3NLxg2L1ZLzhUeQv0EXAMPLE",

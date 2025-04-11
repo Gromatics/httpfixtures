@@ -191,7 +191,7 @@ Want to paste a JSON response and turn it into a fixture? (yes/no) [no]:
  > y
 ```
 
-> ⚠️ **WARNING:** Ensure that your JSON object is minified! ⚠️
+> ⚠️ **WARNING:** Ensure that your JSON object is minified when pasting it into the console! ⚠️
 
 Paste your minified JSON object (example below uses a Stripe response):
 

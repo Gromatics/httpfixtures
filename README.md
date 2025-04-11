@@ -2,6 +2,14 @@
 
 This package helps you create mock HTTP responses for Laravel tests. It combines Laravel's `Http::fake` functionality with Faker data generation to create realistic test data in a format similar to Laravel factories.
 
+# Installation
+
+```
+composer require gromatics/http-fixtures --dev
+```
+That's all you need to install the package as a development dependency in your Laravel project.
+
+
 # Using in Tests
 
 Implement the fixture in your Laravel tests like this:

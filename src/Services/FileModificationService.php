@@ -3,6 +3,7 @@
 
 namespace Gromatics\HttpFixtures\Services;
 
+use DateTime;
 use Illuminate\Support\Str;
 
 class FileModificationService
@@ -159,6 +160,7 @@ class FileModificationService
             case str_contains($key, 'postcode'):
             case str_contains($key, 'postalcode'):
             case str_contains($key, 'postal_code'):
+            case $key === 'zip':
                 return '$this->faker->postcode()';
             case str_contains($key, 'city'):
             case str_contains($key, 'locality'):
@@ -179,8 +181,6 @@ class FileModificationService
                 return '$this->faker->sentence()';
             case str_contains($key, 'title'):
                 return '$this->faker->words(3, true)';
-            case str_contains($key, 'amount'):
-                return '$this->faker->numberBetween(100, 10000)';
             case str_contains($key, 'currency'):
                 return '$this->faker->currencyCode()';
             case str_contains($key, 'year'):
@@ -189,6 +189,34 @@ class FileModificationService
                 return $value;
             case is_bool($value):
                 return '$this->faker->boolean()';
+            case is_int($value):
+                $floor = 0;
+                $ceil = 0;
+                if ($value > 0) {
+                    // Calculate magnitude (rounding to the nearest 10, 100, etc.)
+                    $magnitude = pow(10, floor(log10($value)));
+
+                    // Ensure that the floor is rounded to the next magnitude that starts with 1 (e.g., 2000 to 1000)
+                    if ($value < ($magnitude * 10)) {
+                        $floor = $magnitude;  // Round to the nearest magnitude that starts with 1 (e.g., 2000 to 1000)
+                    } else {
+                        $floor = floor($value / $magnitude) * $magnitude;
+                    }
+
+                    // Get number of digits in the value
+                    $numDigits = floor(log10($value)) + 1;
+
+                    // Calculate the base starting with 9
+                    $base = (int) str_pad('9', $numDigits, '9');
+
+                    // Set the ceiling value to the next valid number starting with 9
+                    if ($value <= $base) {
+                        $ceil = $base;
+                    } else {
+                        $ceil = (int) str_pad('9', $numDigits + 1, '9');
+                    }
+                }
+                return '$this->faker->numberBetween('. $floor .', '. $ceil .')';
             case is_numeric($value):
                 return '$this->faker->numberBetween(10, 10000)';
             case is_string($value) && str_contains($value, ' '):

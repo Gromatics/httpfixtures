@@ -271,30 +271,30 @@ class StripeFixture extends HttpFixture
         return [
             'id' => Str::random(20),
             'object' => $this->faker->word(),
-            'amount' => $this->faker->numberBetween(100, 10000),
-            'amount_capturable' => $this->faker->numberBetween(100, 10000),
-            'amount_received' => $this->faker->numberBetween(100, 10000),
+            'amount' => $this->faker->numberBetween(1000, 9999),
+            'amount_capturable' => $this->faker->numberBetween(0, 0),
+            'amount_received' => $this->faker->numberBetween(1000, 9999),
             'currency' => $this->faker->currencyCode(),
             'customer' => $this->faker->word(),
             'description' => $this->faker->sentence(),
             'status' => 'succeeded',
             'payment_method' => $this->faker->word(),
             'receipt_email' => $this->faker->email(),
-            'created' => $this->faker->numberBetween(10, 10000),
+            'created' => $this->faker->numberBetween(1000000000, 9999999999),
             'charges' => [
                 'object' => $this->faker->word(),
                 'data' => [
                     0 => [
                         'id' => Str::random(20),
                         'object' => $this->faker->word(),
-                        'amount' => $this->faker->numberBetween(100, 10000),
+                        'amount' => $this->faker->numberBetween(1000, 9999),
                         'currency' => $this->faker->currencyCode(),
                         'status' => 'succeeded',
                         'payment_method_details' => [
                             'card' => [
                                 'brand' => $this->faker->word(),
                                 'last4' => $this->faker->numberBetween(10, 10000),
-                                'exp_month' => $this->faker->numberBetween(10, 10000),
+                                'exp_month' => $this->faker->numberBetween(10, 99),
                                 'exp_year' => $this->faker->year(),
                             ],
                             'type' => $this->faker->word(),
@@ -303,7 +303,7 @@ class StripeFixture extends HttpFixture
                     ],
                 ],
                 'has_more' => $this->faker->boolean(),
-                'total_count' => $this->faker->numberBetween(10, 10000),
+                'total_count' => $this->faker->numberBetween(1, 9),
                 'url' => $this->faker->url(),
             ],
         ];

@@ -1,4 +1,4 @@
-# Laravel HTTP Fixture Package
+# Laravel HTTP Fixtures
 
 This package helps you create mock HTTP responses for Laravel tests. It combines Laravel's `Http::fake` functionality with Faker data generation to create realistic test data in a format similar to Laravel factories.
 

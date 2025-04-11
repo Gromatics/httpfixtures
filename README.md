@@ -191,15 +191,14 @@ Want to paste a JSON response and turn it into a fixture? (yes/no) [no]:
  > y
 ```
 
-> ⚠️ **WARNING:** Ensure that your JSON object is minified when pasting it into the console! ⚠️
-
-Paste your minified JSON object (example below uses a Stripe response):
+Give the path to your JSON file:
 
 ```plaintext
-Paste your JSON response object here.:
-> {"id: "pi_3NL....
+ What's the path of your JSON file? (e.g. storage/app/stripe-fixture.json:
+ > storage/app/stripe-fixture.json
 ```
 
+stripe-fixture.json
 ```json
 {
     "id": "pi_3NLxg2L1ZLzhUeQv0EXAMPLE",

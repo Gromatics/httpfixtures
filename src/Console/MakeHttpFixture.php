@@ -22,14 +22,27 @@ class MakeHttpFixture extends Command
             $className = 'ExampleFixture';
         }
 
-        $convertJson = $this->confirm('Want to paste a JSON response and turn it into a fixture?', false);
+        $convertJson = $this->confirm('Want to use a JSON file and turn it into a fixture?', false);
         if (!$convertJson) {
             $path = FileModificationService::copyExampleHttpFixture($className);
             return $this->response($path, $className);
         }
 
-        $this->warn('⚠️ WARNING: MAKE SURE YOU JSON OBJECT IS MINIFIED! ⚠️');
-        $jsonObject = $this->ask('Paste your JSON response object here.');
+        $jsonPath = $this->ask("What's the path of your JSON file? (e.g., storage/app/stripe-fixture.json");
+        if (!file_exists($jsonPath)) {
+            $this->error('The file does not exist at the provided path.');
+            return 1;
+        }
+
+        $jsonContent = file_get_contents($jsonPath);
+
+        if ($jsonContent === false) {
+            $this->error('Failed to read the file content. Please check the file path and permissions.');
+            return 1;
+        }
+
+        $jsonObject = trim($jsonContent);
+
 
         // Validate that it's valid JSON
         try {

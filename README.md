@@ -38,7 +38,7 @@ php artisan make:http-fixture
  > SuperApiResponseFixture
 ```
 
-Choose whether to create a fixture from JSON. Learn how to create a fixture from a Json response [here](#use-json-object-to-create-fixture).
+Choose whether to create a fixture from JSON. Learn how to create a fixture from a JSON response [here](#use-json-object-to-create-fixture).
 
 ```plaintext
 Want to paste a JSON response and turn it into a fixture? (yes/no) [no]: 
@@ -168,7 +168,7 @@ This will return a XML response similar to:
 ```
 
 
-# Use Json object to create fixture
+# Use JSON object to create fixture
 The command will guide you through the process:
 
 Run the following command:

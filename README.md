@@ -88,7 +88,7 @@ class ExampleHttpFixture extends HttpFixture
 
 You can use your HTTP fixture in your tests like this:
 
-```
+```php
 Http::fake([
     "https://www.example.com/get-user/harry" => Http::response(
     (new ExampleHttpFixture())->toJson(), 
@@ -137,7 +137,7 @@ This will produce a response where the first item's name is set to "John Doe".
 ### XML
 You can also generate an XML output like this:
 
-```
+```php
 Http::fake([
     "https://www.example.com/get-user/harry" => Http::response(
     (new ExampleHttpFixture())->toXml('yourRootElement'), 
@@ -147,7 +147,7 @@ Http::fake([
 
 This will return a XML response similar to:
 
-```
+```xml
 <?xml version="1.0"?>\n
 <yourRootElement>
 	<status>OK</status>
@@ -232,12 +232,6 @@ Paste your minified JSON object (example below uses a Stripe response):
 ```
 
 Decide whether to use Faker for generating values:
-$fixture = (new ExampleHttpFixture([
-'items.0.name' => 'John Doe',
-'items.0.email' => 'john.doe@example.com',
-'items.0.phone' => '+1234567890',
-]))->toJson();
-
 
 ```plaintext
  Use faker in your Fixture? (yes/no) [no]: 

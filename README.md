@@ -171,6 +171,12 @@ This will return a XML response similar to:
 # Use Json object to create fixture
 The command will guide you through the process:
 
+Run the following command:
+
+```php
+php artisan make:http-fixture
+```
+
 Enter a fixture name:
 
 ```plaintext

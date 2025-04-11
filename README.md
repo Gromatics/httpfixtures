@@ -90,7 +90,9 @@ You can use your HTTP fixture in your tests like this:
 
 ```
 Http::fake([
-    "https://www.example.com/get-user/harry" => Http::response((new ExampleHttpFixture())->toJson(), 200),
+    "https://www.example.com/get-user/harry" => Http::response(
+    (new ExampleHttpFixture())->toJson(), 
+    200),
 ]);
 ```
 

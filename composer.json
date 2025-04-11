@@ -4,11 +4,11 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "fakerphp/faker": ">=1",
-        "laravel/framework": ">=11"
+        "fakerphp/faker": "^1",
+        "laravel/framework": "^11 || ^12"
     },
     "require-dev": {
-        "pestphp/pest": "^2.0"
+        "pestphp/pest": "^3"
     },
     "autoload": {
         "psr-4": {

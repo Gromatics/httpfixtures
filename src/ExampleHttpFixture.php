@@ -6,7 +6,9 @@ use Illuminate\Support\Str;
 
 class ExampleHttpFixture extends HttpFixture
 {
-
+    /**
+     * @return array
+     */
     public function definition(): array
     {
         return [

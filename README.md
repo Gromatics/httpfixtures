@@ -255,13 +255,14 @@ The command will generate a fixture class similar to this:
 namespace Tests\Fixtures;
 
 use Gromatics\HttpFixtures\HttpFixture;
+use Illuminate\Support\Str;
 
 class StripeFixture extends HttpFixture
 {
     public function definition(): array
     {
         return [
-            'id' => $this->faker->numberBetween(100000, 999999),
+            'id' => Str::random(20),
             'object' => $this->faker->word(),
             'amount' => $this->faker->numberBetween(100, 10000),
             'amount_capturable' => $this->faker->numberBetween(100, 10000),
@@ -277,7 +278,7 @@ class StripeFixture extends HttpFixture
                 'object' => $this->faker->word(),
                 'data' => [
                     0 => [
-                        'id' => $this->faker->numberBetween(100000, 999999),
+                        'id' => Str::random(20),
                         'object' => $this->faker->word(),
                         'amount' => $this->faker->numberBetween(100, 10000),
                         'currency' => $this->faker->currencyCode(),

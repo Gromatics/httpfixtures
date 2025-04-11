@@ -72,7 +72,9 @@ class HttpFixture
     }
 
     /**
+     * @param string $rootElement
      * @return bool|string
+     * @throws \Exception
      */
     public function toXml(string $rootElement = 'root') {
         $xml = new \SimpleXMLElement('<' . $rootElement . '/>');

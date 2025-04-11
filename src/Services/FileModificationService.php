@@ -224,6 +224,8 @@ class FileModificationService
             case is_string($value) && str_contains($value, ' '):
                 $wordCount = substr_count($value, ' ') + 1;
                 return '$this->faker->sentence(' . $wordCount . ')';
+            case $value === null:
+                return 'null';
             default:
                 return '$this->faker->word()';
         }
@@ -246,6 +248,8 @@ class FileModificationService
             "/['\"]\\\$this->faker->(.*?)['\"]/" => '$this->faker->$1',
             // Remove quotes around Str::random calls
             "/['\"]Str::random\((.*?)\)['\"]/" => 'Str::random($1)',
+            // Remove quotes around null values
+            "/['\"]null['\"]/" => 'null',
         ];
 
         return preg_replace(array_keys($patterns), array_values($patterns), $export);

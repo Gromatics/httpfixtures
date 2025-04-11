@@ -189,6 +189,8 @@ class FileModificationService
                 return $value;
             case is_bool($value):
                 return '$this->faker->boolean()';
+            case static::isValidTimestamp($value):
+                return '$this->faker->unixTime()';
             case is_int($value):
                 $floor = 0;
                 $ceil = 0;
@@ -247,6 +249,20 @@ class FileModificationService
         ];
 
         return preg_replace(array_keys($patterns), array_values($patterns), $export);
+    }
+
+    private static function isValidTimestamp($timestamp) {
+        // Check if the timestamp is a valid integer
+        if (!is_int($timestamp)) {
+            return false;
+        }
+
+        // Define the valid range for the timestamp
+        $start = strtotime("1995-01-01 00:00:00");
+        $end = strtotime("2050-12-31 23:59:59");
+
+        // Check if the timestamp is within the range
+        return $timestamp >= $start && $timestamp <= $end;
     }
 
 

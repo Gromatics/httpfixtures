@@ -132,6 +132,40 @@ $fixture = (new ExampleHttpFixture(['items.0.name' => 'John Doe']))->toJson();
 ```
 This will produce a response where the first item's name is set to "John Doe".
 
+### XML
+You can also generate an XML output like this:
+
+```
+Http::fake([
+    "https://www.example.com/get-user/harry" => Http::response(
+    (new ExampleHttpFixture())->toXml('yourRootElement'), 
+    200),
+]);
+```
+
+This will return a XML response similar to:
+
+```
+<?xml version="1.0"?>\n
+<yourRootElement>
+	<status>OK</status>
+	<message>Voluptatum fugit aspernatur non.</message>
+	<items>
+		<item>
+			<identifier>6zzzWFhmyRyPZwoYa6b8</identifier>
+			<name>Schiller, Gislason and Reynolds</name>
+			<address>5708 Lockman Gardens Armstronghaven, FL 32188</address>
+			<postcode>87862-9490</postcode>
+			<city>North Sabrina</city>
+			<country>Romania</country>
+			<phone>(346) 871-2661</phone>
+			<email>marion66@yahoo.com</email>
+		</item>
+	</items>
+</yourRootElement>
+```
+
+
 # Use Json object to create fixture
 The command will guide you through the process:
 
@@ -196,6 +230,12 @@ Paste your minified JSON object (example below uses a Stripe response):
 ```
 
 Decide whether to use Faker for generating values:
+$fixture = (new ExampleHttpFixture([
+'items.0.name' => 'John Doe',
+'items.0.email' => 'john.doe@example.com',
+'items.0.phone' => '+1234567890',
+]))->toJson();
+
 
 ```plaintext
  Use faker in your Fixture? (yes/no) [no]: 

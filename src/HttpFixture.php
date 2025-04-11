@@ -71,8 +71,37 @@ class HttpFixture
         return json_encode($this->get());
     }
 
+    /**
+     * @return bool|string
+     */
+    public function toXml(string $rootElement = 'root') {
+        $xml = new \SimpleXMLElement('<' . $rootElement . '/>');
+        $this->arrayToXml($this->get(), $xml);
+        return $xml->asXML();
+    }
 
-    public function toXml() {}
+    /**
+     * @param array $array
+     * @param \SimpleXMLElement $xml
+     * @return void
+     */
+    protected function arrayToXml(array $array, \SimpleXMLElement &$xml): void
+    {
+        foreach ($array as $key => $value) {
+            if (is_array($value)) {
+                if (is_numeric($key)) {
+                    $key = 'item'; // Handle numeric array keys
+                }
+                $child = $xml->addChild($key);
+                $this->arrayToXml($value, $child);
+            } else {
+                if (is_numeric($key)) {
+                    $key = 'item'; // Handle numeric array keys
+                }
+                $xml->addChild($key, htmlspecialchars((string)$value));
+            }
+        }
+    }
 
 
 }

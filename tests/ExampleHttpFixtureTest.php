@@ -19,3 +19,11 @@ it('updates a key in the definition with dot notation', function () {
     $fixture = new ExampleHttpFixture(['items.0.name' => $name]);
     expect($fixture->toArray()['items'][0]['name'])->toBe($name);
 });
+
+it('gets valid XML output', function () {
+    $fixture = new ExampleHttpFixture();
+    $xml = $fixture->toXml(); // Assuming toXml() generates the XML output
+    $dom = new \DOMDocument();
+    $isValidXml = $dom->loadXML($xml, LIBXML_NOERROR | LIBXML_NOWARNING);
+    expect($isValidXml)->toBeTrue();
+});

@@ -41,7 +41,7 @@ php artisan make:http-fixture
  > SuperApiResponseFixture
 ```
 
-Choose whether to create a fixture from JSON. Learn how to create a fixture from a JSON response [here](#use-json-object-to-create-fixture).
+Choose whether to create a fixture from JSON. You can automatically create fixtures from [HTTP responses](#create-fixture-from-http-response) or from [JSON objects](#use-json-object-to-create-fixture). 
 
 ```plaintext
 Want to paste a JSON response and turn it into a fixture? (yes/no) [no]: 
@@ -170,6 +170,38 @@ This will return a XML response similar to:
     </items>
 </yourRootElement>
 ```
+
+# Create fixture from HTTP response
+
+You can generate HTTP fixtures in Laravel using the `Http::record()` method along with `HttpResponseRecorder::recordedToHttpFixture()`.
+To create a fixture from a real HTTP request within a test, use the following pattern:
+
+```php
+use Gromatics\HttpFixtures\Services\HttpResponseRecorder;
+use Illuminate\Support\Facades\Http;
+
+it('creates a HTTP Fixture from a real JSON request', function() {
+    Http::record();
+    Http::get("https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle=perl&site=stackoverflow&limit=1");
+    HttpResponseRecorder::recordedToHttpFixture();
+});
+```
+By default, this will create a fixture named StackexchangeSearchFixture in the /tests/Fixtures directory. 
+
+### Custom Fixture Names
+You can optionally provide a custom fixture name by passing it to the recordedToHttpFixture() method:
+
+```php
+HttpResponseRecorder::recordedToHttpFixture('CustomFixtureName');
+```
+
+### Default Naming Convention
+If no name is provided, the fixture name is automatically generated using the domain and the last segment of the URL path.
+For example:
+
+URL: https://api.stackexchange.com/2.2/search?order=desc
+
+Default Fixture Name: StackexchangeSearchFixture
 
 # Use JSON object to create fixture
 

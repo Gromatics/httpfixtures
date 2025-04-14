@@ -5,7 +5,7 @@
     "license": "MIT",
     "require": {
         "fakerphp/faker": "^1",
-        "laravel/framework": "^11 || ^12"
+        "laravel/framework": "^12"
     },
     "require-dev": {
         "pestphp/pest": "^3"

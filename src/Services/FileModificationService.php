@@ -107,7 +107,8 @@ class FileModificationService
             "/array \(/i" => '[',
             "/^([ ]*)\)(,?)$/m" => '$1]$2',
             "/=>[ ]?\n[ ]+\[/m" => '=> [',
-            "/\)(\n[ ]*\])/m" => ']$1'
+            "/\)(\n[ ]*\])/m" => ']$1',
+            "/^([ ]{2,})/m" => '        $1' // Add proper indentation
         ];
         return preg_replace(array_keys($patterns), array_values($patterns), $export);
     }
@@ -244,6 +245,7 @@ class FileModificationService
             "/^([ ]*)\)(,?)$/m" => '$1]$2',
             "/=>[ ]?\n[ ]+\[/m" => '=> [',
             "/\)(\n[ ]*\])/m" => ']$1',
+            "/^([ ]{2,})/m" => '        $1', // Add proper indentation
             // Remove quotes around faker calls
             "/['\"]\\\$this->faker->(.*?)['\"]/" => '$this->faker->$1',
             // Remove quotes around Str::random calls

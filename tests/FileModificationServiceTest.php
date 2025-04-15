@@ -45,17 +45,18 @@ it('should copy ExampleHttpFixture and set definitions according /Fixtures/strip
 
 it('should copy ExampleHttpFixture and set definitions according /Fixtures/stripe-result.json and replace with faker data', function () {
     $json = file_get_contents(dirname(__FILE__).'/Fixtures/stripe-result.json');
-    FileModificationService::copyExampleHttpFixture('PestTestGoogleResultFixture', $json, true);
+    FileModificationService::copyExampleHttpFixture('PestTestStripeFixture', $json, true);
 
-    $fixturePath = base_path('tests/Fixtures/PestTestGoogleResultFixture.php');
+    $fixturePath = base_path('tests/Fixtures/PestTestStripeFixture.php');
     expect(File::exists($fixturePath))->toBeTrue();
 
     /** @phpstan-ignore-next-line */
-    $instance = new Tests\Fixtures\PestTestGoogleResultFixture;
+    $instance = new Tests\Fixtures\PestTestStripeFixture;
     /** @phpstan-ignore-next-line */
-    expect($instance)->toBeInstanceOf(Tests\Fixtures\PestTestGoogleResultFixture::class);
+    expect($instance)->toBeInstanceOf(Tests\Fixtures\PestTestStripeFixture::class);
 
     $definition = $instance->definition();
+
     expect($definition)->toHaveKeys(['object', 'amount', 'charges']);
 
     expect($definition['charges']['data'][0]['status'])->toBe('succeeded');

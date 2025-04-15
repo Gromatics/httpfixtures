@@ -2,61 +2,35 @@
 
 This package helps you create mock HTTP responses for Laravel tests. It combines Laravel's `Http::fake` functionality with Faker data generation to create realistic test data in a format similar to Laravel factories.
 
-# Installation
+## Contents
+- [Laravel HTTP Fixtures](#laravel-http-fixtures)
+    - [1. What is a HTTP fixture and why do I need it?](#1-what-is-a-http-fixture-and-why-do-i-need-it)
+    - [2. Creating a Fixture](#2-creating-a-fixture)
+        - [2.1 Create a fixture from a real JSON response](#21-create-a-fixture-from-a-real-json-response)
+        - [2.2 Create a fixture using the Artisan command](#22-create-a-fixture-using-the-artisan-command)
+        - [2.3 Create a fixture from a JSON file](#23-create-a-fixture-from-a-json-file)
+    - [3. Use a HTTP fixture in tests](#3-use-a-http-fixture-in-tests)
+    - [4. Fixture options](#4-fixture-options)
 
-```
-composer require gromatics/http-fixtures --dev
-```
+---
 
-That's all you need to install the package as a development dependency in your Laravel project.
+## 1. What is a HTTP fixture and why do I need it?
 
-# Using in Tests
-
-Implement the fixture in your Laravel tests like this:
-
-```php
-Http::preventStrayRequests();
-
-$fixture = new ExampleHttpFixture();
-Http::fake([
-    "https://www.example.com/get-user/harry" => Http::response($fixture->toJson(), 200),
-]);
-```
-
-This sets up a mock HTTP response for testing in Laravel by creating an instance of `ExampleHttpFixture` that generates fake data using Laravel's Faker library. `Http::fake()` is used to intercept real HTTP requests and replace them with
-predetermined fake responses during testing. The code specifically mocks requests to "[https://www.example.com/get-user/harry](https://www.example.com/get-user/harry)", returning a JSON response created by the fixture with a 200 (OK) status code.
-
-# Creating a Fixture
-
-### 1. Using the Artisan Command
-
-Run the following command:
+An HTTP fixture is a class that mocks the data of a JSON API endpoint. Sometimes you don't want to hit a real API in your tests. APIs can go down, and while your code may work perfectly, a downed API can cause your tests to fail. A common way to
+solve this is to save the JSON response and serve it using `Http::fake`, like this:
 
 ```php
-php artisan make:http-fixture
+$json = file_get_contents(dirname(__FILE__) . '/../../Fixtures/response.json');
+Http::fake(["https://example.com/api" => Http::response($json, 200)]);
 ```
 
-```
- What is the class name of the HTTP Fixture? (e.g., StripeFixture, GoogleFixture):
- > SuperApiResponseFixture
-```
-
-Choose whether to create a fixture from JSON. You can automatically create fixtures from [HTTP responses](#create-fixture-from-http-response) or from [JSON objects](#use-json-object-to-create-fixture). 
-
-```plaintext
-Want to paste a JSON response and turn it into a fixture? (yes/no) [no]: 
- > N
-```
-
-Now you have a fixture in tests/Fixtures called `SuperApiResponseFixture.php`.
-
-### 2. Manually Creating a File
-
-You can manually create a fixture file in the `/test/Fixtures` directory. Customize your `definition()` method as needed, for example:
+A saved JSON response can contain sensitive data, and it can be cumbersome to filter all of it out before committing the JSON to your repository. The Laravel HTTP Fixture package handles this for you. It can automatically create a fixture from an
+HTTP request and uses the Faker library to replace sensitive values, similar to how Laravel factories work. A HTTP fixture looks like this:
 
 ```php
-namespace Gromatics\HttpFixtures;
+namespace Tests\Fixtures;
 
+use Gromatics\HttpFixtures\HttpFixture;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -84,157 +58,102 @@ class ExampleHttpFixture extends HttpFixture
 }
 ```
 
-# Using Fixtures
+---
 
-### Basic Usage
+## 2. Creating a Fixture
 
-You can use your HTTP fixture in your tests like this:
+### 2.1 Create a fixture from a real JSON response
 
-```php
-Http::fake([
-    "https://www.example.com/get-user/harry" => Http::response(
-    (new ExampleHttpFixture())->toJson(), 
-    200),
-]);
-```
+The easiest way to create a fixture is by recording a real HTTP request in your test. You can do this by placing the Http::record() method before calling the service that makes the HTTP requests. After the service has finished, use
+HttpResponseRecorder::recordedToHttpFixture() to save the responses as fixtures.
 
-You can override specific keys when initializing the fixture:
+A service can make multiple requests, and for each unique request, a new fixture will be created. If the same request is made more than once, it won’t duplicate the fixture.
+
+For example:
 
 ```php
-Http::fake([
-    "https://www.example.com/get-user/harry" => Http::response(
-    (new ExampleHttpFixture(['message' => 'Everything went ok']))->toJson(), 
-    200),
-]);
-```
-
-This will return a JSON response similar to:
-
-```json
-{
-    "status": "OK",
-    "message": "Everything went ok",
-    "items": [
-        {
-            "identifier": "hR8PdiRPccG0Db3B9lfg",
-            "name": "Turner Group",
-            "address": "352 Pacocha Harbor Apt. 285\nDorisport, SC 39336",
-            "postcode": "59499-6927",
-            "city": "Schillerland",
-            "country": "Bouvet Island (Bouvetoya)",
-            "phone": "+1 (219) 512-9679",
-            "email": "willow88@friesen.biz"
-        }
-    ]
-}
-```
-
-You can use dot notation to update nested values:
-
-```php
-$fixture = (new ExampleHttpFixture(['items.0.name' => 'John Doe']))->toJson();
-```
-
-This will produce a response where the first item's name is set to "John Doe".
-
-### XML
-
-You can also generate an XML output like this:
-
-```php
-Http::fake([
-    "https://www.example.com/get-user/harry" => Http::response(
-    (new ExampleHttpFixture())->toXml('yourRootElement'), 
-    200),
-]);
-```
-
-This will return a XML response similar to:
-
-```xml
-<?xml version="1.0"?>\n
-<yourRootElement>
-    <status>OK</status>
-    <message>Voluptatum fugit aspernatur non.</message>
-    <items>
-        <item>
-            <identifier>6zzzWFhmyRyPZwoYa6b8</identifier>
-            <name>Schiller, Gislason and Reynolds</name>
-            <address>5708 Lockman Gardens Armstronghaven, FL 32188</address>
-            <postcode>87862-9490</postcode>
-            <city>North Sabrina</city>
-            <country>Romania</country>
-            <phone>(346) 871-2661</phone>
-            <email>marion66@yahoo.com</email>
-        </item>
-    </items>
-</yourRootElement>
-```
-
-# Create fixture from HTTP response
-
-You can generate HTTP fixtures in Laravel using the `Http::record()` method along with `HttpResponseRecorder::recordedToHttpFixture()`.
-To create a fixture from a real HTTP request within a test, use the following pattern:
-
-```php
-use Gromatics\HttpFixtures\Services\HttpResponseRecorder;
+use Gromatics\Httpfixtures\Services\HttpResponseRecorder;
 use Illuminate\Support\Facades\Http;
 
-it('creates a HTTP Fixture from a real JSON request', function() {
-    Http::record();
-    Http::get("https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle=perl&site=stackoverflow&limit=1");
+it('creates a HTTP Fixture from a real JSON request', function () {
+    Http::record(); 
+    Http::get('https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle=perl&site=stackoverflow&limit=1');
     HttpResponseRecorder::recordedToHttpFixture();
 });
 ```
-By default, this will create a fixture named StackexchangeSearchFixture in the /tests/Fixtures directory. 
 
-### Custom Fixture Names
+```text
 You can optionally provide a custom fixture name by passing it to the recordedToHttpFixture() method:
-
-```php
 HttpResponseRecorder::recordedToHttpFixture('CustomFixtureName');
 ```
 
-### Default Naming Convention
-If no name is provided, the fixture name is automatically generated using the domain and the last segment of the URL path.
-For example:
 
-URL: https://api.stackexchange.com/2.2/search?order=desc
+This will create a StackexchangeSearchFixture.php file in /tests/Fixtures, which might look like this:
 
-Default Fixture Name: StackexchangeSearchFixture
+```php
+class StackexchangeSearchFixture extends HttpFixture
+{
 
-# Use JSON object to create fixture
+    public function definition(): array
+    {
+        return [
+          'items' => [
+            0 => [
+              'tags' => [
+                0 => $this->faker->word(),
+                1 => $this->faker->word(),
+                2 => $this->faker->word(),
+              ],
+              'owner' => [
+                'reputation' => $this->faker->numberBetween(10, 99),
+                'user_id' => $this->faker->numberBetween(1000000, 9999999),
+                'user_type' => $this->faker->word(),
+                'profile_image' => $this->faker->word(),
+                'display_name' => $this->faker->name(),
+                'link' => $this->faker->url(),
+              ],
+              'is_answered' => $this->faker->boolean(),
+              'view_count' => $this->faker->numberBetween(100, 999),
+              'answer_count' => $this->faker->numberBetween(1, 9),
+              'score' => $this->faker->numberBetween(0, 0),
+              'last_activity_date' => $this->faker->unixTime(),
+              'creation_date' => $this->faker->unixTime(),
+              'last_edit_date' => $this->faker->unixTime(),
+              'question_id' => $this->faker->numberBetween(10000000, 99999999),
+              'content_license' => $this->faker->sentence(3),
+              'link' => $this->faker->url(),
+              'title' => $this->faker->words(3, true),
+            ],
+            ...
+```
 
-The command will guide you through the process:
+---
 
-Run the following command:
+### 2.2 Create a fixture using the Artisan command
+You can also create a fixture using an Artisan command. Just run the command below and follow the on-screen instructions:
 
 ```php
 php artisan make:http-fixture
 ```
+---
 
-Enter a fixture name:
+### 2.3 Create a fixture from a JSON file
 
+You can also create a fixture from a saved JSON file. For example, if you’ve saved a Stripe API response in your storage directory, you can do the following:
 ```plaintext
- What is the class name of the HTTP Fixture? (e.g., StripeFixture, GoogleFixture): 
- > StripeFixture
-```
+php artisan make:http-fixture
 
-Choose whether to create a fixture from JSON:
+What is the class name of the HTTP Fixture? (e.g., StripeFixture, GoogleFixture): 
+> StripeFixture
 
-```plaintext
 Want to paste a JSON response and turn it into a fixture? (yes/no) [no]: 
- > y
+> y
+
+What's the path of your JSON file? (e.g. storage/app/stripe-fixture.json:
+> storage/app/stripe-fixture.json
 ```
 
-Give the path to your JSON file:
-
-```plaintext
- What's the path of your JSON file? (e.g. storage/app/stripe-fixture.json:
- > storage/app/stripe-fixture.json
-```
-
-stripe-fixture.json
+If your Stripe response looks like this;
 
 ```json
 {
@@ -278,14 +197,7 @@ stripe-fixture.json
 }
 ```
 
-Decide whether to use Faker for generating values:
-
-```plaintext
- Use faker in your Fixture? (yes/no) [no]: 
- > y
-```
-
-The command will generate a fixture class similar to this:
+Then the command will generate a fixture class similar to this:
 
 ```php
 namespace Tests\Fixtures;
@@ -339,5 +251,88 @@ class StripeFixture extends HttpFixture
     }
 }
 ```
+---
 
+## 3. Use a HTTP fixture in tests
 
+You can use your HTTP fixture in your tests like this:
+
+```php
+Http::fake(["https://api.stripe.com/v1/*" => Http::response(
+    (new StripeFixture())->toJson(),  200),
+]);
+```
+
+You can override specific keys when initializing the fixture:
+```php
+Http::fake(["https://api.stripe.com/v1/*" => Http::response(
+    (new StripeFixture(['description' => 'My first Stripe payment']))->toJson(),  200),
+]);
+```
+
+This will return a JSON response similar to:
+
+```json
+{
+    "id": "CuOmvFTXUcSDMqRhm7ZI",
+    "object": "voluptas",
+    "amount": 7026,
+    "amount_capturable": 2396,
+    "amount_received": 8877,
+    "currency": "SYP",
+    "customer": "cum",
+    "description": "My first Stripe payment",
+    "status": "succeeded",
+    "payment_method": "nihil",
+    "receipt_email": "kirlin.brisa@yahoo.com"
+}
+```
+
+You can also use dot notation to update nested values:
+
+```php
+$fixture = (new ExampleHttpFixture(['items.0.name' => 'John Doe']))->toJson();
+```
+
+This will produce a response where the first item's name is set to "John Doe".
+
+---
+
+## 4. Fixture options
+
+The output of the fixture can be in  JSON, XML, array and a Laravel collection.
+
+### XML
+
+If you want to return XML instead of JSON, you can use the `toXML()` method and pass the root element name as a parameter.
+For example:
+
+```php
+Http::fake([
+    "https://www.example.com/get-user/harry" => Http::response(
+    (new ExampleHttpFixture())->toXml('yourRootElement'), 
+    200),
+]);
+```
+
+This will return na XML response similar to:
+
+```xml
+<?xml version="1.0"?>\n
+<yourRootElement>
+    <status>OK</status>
+    <message>Voluptatum fugit aspernatur non.</message>
+    <items>
+        <item>
+            <identifier>6zzzWFhmyRyPZwoYa6b8</identifier>
+            <name>Schiller, Gislason and Reynolds</name>
+            <address>5708 Lockman Gardens Armstronghaven, FL 32188</address>
+            <postcode>87862-9490</postcode>
+            <city>North Sabrina</city>
+            <country>Romania</country>
+            <phone>(346) 871-2661</phone>
+            <email>marion66@yahoo.com</email>
+        </item>
+    </items>
+</yourRootElement>
+```

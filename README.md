@@ -17,7 +17,7 @@ This package helps you create mock HTTP responses for Laravel tests. It combines
 
 ---
 
-# 1. Installation
+## 1. Installation
 
 ```
 composer require gromatics/http-fixtures --dev

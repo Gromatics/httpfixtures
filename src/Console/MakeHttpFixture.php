@@ -2,7 +2,7 @@
 
 namespace Gromatics\HttpFixtures\Console;
 
-use Gromatics\HttpFixtures\Services\FileModificationService;
+use Gromatics\Httpfixtures\Services\FileModificationService;
 use Illuminate\Console\Command;
 
 class MakeHttpFixture extends Command

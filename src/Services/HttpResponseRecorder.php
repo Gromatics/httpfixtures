@@ -12,20 +12,21 @@ class HttpResponseRecorder
         Http::recorded(function ($request, $response) use ($newFixtureName) {
             if (is_array($response->json())) {
 
-                if (! $newFixtureName) {
+                if (!$newFixtureName) {
                     $host = parse_url($request->url(), PHP_URL_HOST);
                     $parts = explode('.', $host);
                     $domain = $parts[count($parts) - 2];
                     $path = parse_url($request->url(), PHP_URL_PATH);
-                    $lastParam = basename($path);
-                    $newFixtureName = ucfirst($domain).ucfirst(Str::slug($lastParam, '')).'Fixture';
-                    FileModificationService::copyExampleHttpFixture($newFixtureName, json_encode($response->json()), true);
+                    $lastParam = strtolower(Str::slug(preg_replace('/[^a-zA-Z0-9]/', '', basename($path))));
+                    $newFixtureName = ucfirst($domain) . ucfirst($lastParam) . 'Fixture';
                 }
+
+                FileModificationService::copyExampleHttpFixture($newFixtureName, json_encode($response->json()), true);
 
                 fwrite(STDOUT, "{$newFixtureName} created in /tests/Fixtures");
 
             } else {
-                fwrite(STDOUT, "\033[31m".'Could not create HTTP Fixture. Request URL: '.$request->url()." returns invalid JSON. \033[0m\n");
+                fwrite(STDOUT, "\033[31m" . 'Could not create HTTP Fixture. Request URL: ' . $request->url() . " returns invalid JSON. \033[0m\n");
             }
         });
     }

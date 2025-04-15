@@ -2,7 +2,7 @@
 
 namespace Gromatics\tests;
 
-use Gromatics\HttpFixtures\Services\HttpResponseRecorder;
+use Gromatics\Httpfixtures\Services\HttpResponseRecorder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 

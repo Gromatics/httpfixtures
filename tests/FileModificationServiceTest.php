@@ -1,6 +1,6 @@
 <?php
 
-use Gromatics\HttpFixtures\Services\FileModificationService;
+use Gromatics\Httpfixtures\Services\FileModificationService;
 use Tests\TestCase;
 
 uses(TestCase::class)->in(__DIR__);

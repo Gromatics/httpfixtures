@@ -4,17 +4,28 @@ This package helps you create mock HTTP responses for Laravel tests. It combines
 
 ## Contents
 - [Laravel HTTP Fixtures](#laravel-http-fixtures)
-    - [1. What is a HTTP fixture and why do I need it?](#1-what-is-a-http-fixture-and-why-do-i-need-it)
-    - [2. Creating a Fixture](#2-creating-a-fixture)
-        - [2.1 Create a fixture from a real JSON response](#21-create-a-fixture-from-a-real-json-response)
-        - [2.2 Create a fixture using the Artisan command](#22-create-a-fixture-using-the-artisan-command)
-        - [2.3 Create a fixture from a JSON file](#23-create-a-fixture-from-a-json-file)
-    - [3. Use a HTTP fixture in tests](#3-use-a-http-fixture-in-tests)
-    - [4. Fixture options](#4-fixture-options)
+    - [1. Installation](#1-installation)
+    - [2. What is a HTTP fixture and why do I need it?](#2-what-is-a-http-fixture-and-why-do-i-need-it)
+    - [3. Creating a Fixture](#3-creating-a-fixture)
+        - [3.1 Create a fixture from a real JSON response](#31-create-a-fixture-from-a-real-json-response)
+        - [3.2 Create a fixture using the Artisan command](#32-create-a-fixture-using-the-artisan-command)
+        - [3.3 Create a fixture from a JSON file](#33-create-a-fixture-from-a-json-file)
+
+    - [4. Use a HTTP fixture in tests](#4-use-a-http-fixture-in-tests)
+    - [5. Fixture options](#5-fixture-options)
+
 
 ---
 
-## 1. What is a HTTP fixture and why do I need it?
+# 1. Installation
+
+```
+composer require gromatics/http-fixtures --dev
+```
+That's all you need to install the package as a development dependency in your Laravel project.
+
+
+## 2. What is a HTTP fixture and why do I need it?
 
 An HTTP fixture is a class that mocks the data of a JSON API endpoint. Sometimes you don't want to hit a real API in your tests. APIs can go down, and while your code may work perfectly, a downed API can cause your tests to fail. A common way to
 solve this is to save the JSON response and serve it using `Http::fake`, like this:
@@ -60,9 +71,9 @@ class ExampleHttpFixture extends HttpFixture
 
 ---
 
-## 2. Creating a Fixture
+## 3. Creating a Fixture
 
-### 2.1 Create a fixture from a real JSON response
+### 3.1 Create a fixture from a real JSON response
 
 The easiest way to create a fixture is by recording a real HTTP request in your test. You can do this by placing the Http::record() method before calling the service that makes the HTTP requests. After the service has finished, use
 HttpResponseRecorder::recordedToHttpFixture() to save the responses as fixtures.
@@ -129,7 +140,7 @@ class StackexchangeSearchFixture extends HttpFixture
 
 ---
 
-### 2.2 Create a fixture using the Artisan command
+### 3.2 Create a fixture using the Artisan command
 You can also create a fixture using an Artisan command. Just run the command below and follow the on-screen instructions:
 
 ```php
@@ -137,7 +148,7 @@ php artisan make:http-fixture
 ```
 ---
 
-### 2.3 Create a fixture from a JSON file
+### 3.3 Create a fixture from a JSON file
 
 You can also create a fixture from a saved JSON file. For example, if you’ve saved a Stripe API response in your storage directory, you can do the following:
 ```plaintext
@@ -253,7 +264,7 @@ class StripeFixture extends HttpFixture
 ```
 ---
 
-## 3. Use a HTTP fixture in tests
+## 4. Use a HTTP fixture in tests
 
 You can use your HTTP fixture in your tests like this:
 
@@ -298,7 +309,7 @@ This will produce a response where the first item's name is set to "John Doe".
 
 ---
 
-## 4. Fixture options
+## 5. Fixture options
 
 The output of the fixture can be in  JSON, XML, array and a Laravel collection.
 

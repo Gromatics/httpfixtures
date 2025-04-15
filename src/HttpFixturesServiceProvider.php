@@ -1,4 +1,5 @@
 <?php
+
 namespace Gromatics\HttpFixtures;
 
 use Gromatics\HttpFixtures\Console\MakeHttpFixture;
@@ -18,7 +19,7 @@ class HttpFixturesServiceProvider extends ServiceProvider
         // Register artisan commands
         if ($this->app->runningInConsole()) {
             $this->commands([
-                MakeHttpFixture::class
+                MakeHttpFixture::class,
             ]);
         }
     }

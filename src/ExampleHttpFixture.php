@@ -1,18 +1,16 @@
 <?php
 
 namespace Gromatics\HttpFixtures;
+
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class ExampleHttpFixture extends HttpFixture
 {
-    /**
-     * @return array
-     */
     public function definition(): array
     {
         return [
-            'status' => Arr::random(['OK', "NOK"]),
+            'status' => Arr::random(['OK', 'NOK']),
             'message' => $this->faker->sentence(),
             'items' => [
                 [
@@ -34,8 +32,8 @@ class ExampleHttpFixture extends HttpFixture
                     'country' => $this->faker->country(),
                     'phone' => $this->faker->phoneNumber(),
                     'email' => $this->faker->email(),
-                ]
-            ]
+                ],
+            ],
 
         ];
     }

@@ -1,32 +1,27 @@
 <?php
 
-
 namespace Gromatics\HttpFixtures\Services;
 
-use DateTime;
 use Illuminate\Support\Str;
 
 class FileModificationService
 {
-
     /**
-     * @param string $className
-     * @param string|null $json
-     * @param bool $useFaker
      * @return string
+     *
      * @throws \Exception
      */
     public static function copyExampleHttpFixture(string $className, ?string $json = null, bool $useFaker = false)
     {
 
-        $exampleFixturePath = dirname(__FILE__, 2) . '/ExampleHttpFixture.php';
+        $exampleFixturePath = dirname(__FILE__, 2).'/ExampleHttpFixture.php';
         $fixtureDestinationPath = base_path("tests/Fixtures/{$className}.php");
 
-        if (!file_exists($exampleFixturePath)) {
+        if (! file_exists($exampleFixturePath)) {
             throw new \Exception('The ExampleHttpFixture.php file was not found.');
         }
 
-        if (!is_dir(dirname($fixtureDestinationPath))) {
+        if (! is_dir(dirname($fixtureDestinationPath))) {
             mkdir(dirname($fixtureDestinationPath), 0755, true);
         }
 
@@ -47,11 +42,8 @@ class FileModificationService
     }
 
     /**
-     * @param string $content
-     * @param string $className
-     * @param string|null $json
-     * @param bool $useFaker
      * @return array|string|string[]
+     *
      * @throws \Exception
      */
     private static function replaceContentClass(string $content, string $className, ?string $json = null, bool $useFaker = false)
@@ -78,10 +70,8 @@ class FileModificationService
     }
 
     /**
-     * @param string $content
-     * @param string $json
-     * @param bool $useFaker
      * @return array|string|string[]|null
+     *
      * @throws \Exception
      */
     private static function parseJson(string $content, string $json, bool $useFaker = false)
@@ -89,17 +79,18 @@ class FileModificationService
         try {
             $arr = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $e) {
-            throw new \Exception('Invalid JSON provided: ' . $e->getMessage());
+            throw new \Exception('Invalid JSON provided: '.$e->getMessage());
         }
 
-        if (!$useFaker) {
-            //Remove everything between  return [ and ] and replace with array;
-            return preg_replace('/return \[\s*(.*?)\s*\];/s', 'return ' . self::exportArray($arr) . ';', $content);
+        if (! $useFaker) {
+            // Remove everything between  return [ and ] and replace with array;
+            return preg_replace('/return \[\s*(.*?)\s*\];/s', 'return '.self::exportArray($arr).';', $content);
         }
-        return preg_replace('/return \[\s*(.*?)\s*\];/s', 'return ' . self::exportArrayWithFaker($arr) . ';', $content);
+
+        return preg_replace('/return \[\s*(.*?)\s*\];/s', 'return '.self::exportArrayWithFaker($arr).';', $content);
     }
 
-    //Replace array() with []
+    // Replace array() with []
     private static function exportArray($arr)
     {
         $export = var_export($arr, true);
@@ -108,15 +99,12 @@ class FileModificationService
             "/^([ ]*)\)(,?)$/m" => '$1]$2',
             "/=>[ ]?\n[ ]+\[/m" => '=> [',
             "/\)(\n[ ]*\])/m" => ']$1',
-            "/^([ ]{2,})/m" => '        $1' // Add proper indentation
+            '/^([ ]{2,})/m' => '        $1', // Add proper indentation
         ];
+
         return preg_replace(array_keys($patterns), array_values($patterns), $export);
     }
 
-    /**
-     * @param array $arr
-     * @return array
-     */
     private static function replaceArrayWithFakerTypes(array $arr): array
     {
         $result = [];
@@ -127,20 +115,16 @@ class FileModificationService
                 $result[$key] = self::determineTypeFaker($key, $value);
             }
         }
+
         return $result;
     }
 
-    /**
-     * @param mixed $key
-     * @param mixed $value
-     * @return string
-     */
     private static function determineTypeFaker(mixed $key, mixed $value): string
     {
         $key = strtolower($key);
         switch (true) {
             case $key === 'id':
-                return is_string($value) && !is_numeric($value) ? 'Str::random(20)' : '$this->faker->numberBetween(100000, 999999)';
+                return is_string($value) && ! is_numeric($value) ? 'Str::random(20)' : '$this->faker->numberBetween(100000, 999999)';
             case $key === 'identifier':
                 return 'Str::random(20)';
             case str_contains($key, 'firstname'):
@@ -219,12 +203,14 @@ class FileModificationService
                         $ceil = (int) str_pad('9', $numDigits + 1, '9');
                     }
                 }
-                return '$this->faker->numberBetween('. $floor .', '. $ceil .')';
+
+                return '$this->faker->numberBetween('.$floor.', '.$ceil.')';
             case is_numeric($value):
                 return '$this->faker->numberBetween(10, 10000)';
             case is_string($value) && str_contains($value, ' '):
                 $wordCount = substr_count($value, ' ') + 1;
-                return '$this->faker->sentence(' . $wordCount . ')';
+
+                return '$this->faker->sentence('.$wordCount.')';
             case $value === null:
                 return 'null';
             default:
@@ -245,7 +231,7 @@ class FileModificationService
             "/^([ ]*)\)(,?)$/m" => '$1]$2',
             "/=>[ ]?\n[ ]+\[/m" => '=> [',
             "/\)(\n[ ]*\])/m" => ']$1',
-            "/^([ ]{2,})/m" => '        $1', // Add proper indentation
+            '/^([ ]{2,})/m' => '        $1', // Add proper indentation
             // Remove quotes around faker calls
             "/['\"]\\\$this->faker->(.*?)['\"]/" => '$this->faker->$1',
             // Remove quotes around Str::random calls
@@ -257,19 +243,18 @@ class FileModificationService
         return preg_replace(array_keys($patterns), array_values($patterns), $export);
     }
 
-    private static function isValidTimestamp($timestamp) {
+    private static function isValidTimestamp($timestamp)
+    {
         // Check if the timestamp is a valid integer
-        if (!is_int($timestamp)) {
+        if (! is_int($timestamp)) {
             return false;
         }
 
         // Define the valid range for the timestamp
-        $start = strtotime("1995-01-01 00:00:00");
-        $end = strtotime("2050-12-31 23:59:59");
+        $start = strtotime('1995-01-01 00:00:00');
+        $end = strtotime('2050-12-31 23:59:59');
 
         // Check if the timestamp is within the range
         return $timestamp >= $start && $timestamp <= $end;
     }
-
-
 }

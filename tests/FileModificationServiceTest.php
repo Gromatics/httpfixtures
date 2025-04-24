@@ -66,3 +66,51 @@ it('should copy ExampleHttpFixture and set definitions according /Fixtures/strip
     File::delete($fixturePath);
     expect(File::exists($fixturePath))->toBeFalse();
 });
+
+function getCharType($char) {
+    if (preg_match('/[0-9]/', $char)) {
+        return "number";
+    } elseif (preg_match('/[a-zA-Z]/', $char)) {
+        return "letter";
+    } elseif (preg_match('/\s/', $char)) {
+        return "whitespace";
+    } else {
+        return "symbol";
+    }
+}
+
+it('should generate faker identifiers in the same format as the original', function () {
+    $arr = [
+        'identifier1' => '383fe3fb-6c04-4b77-8bde-c7feab01e662', //uui
+        'identifier2' => 'A5C0Z8AK0E',
+        'identifier3' => 'Addd234S##$cdfdd',
+        'identifier4' => 'pi_3NLxg2L1ZLzhUeQv0EXAMPLE',
+        'identifier5' => '17969_6414291_03098ab8-faf5-4e92-ae5c-87f3e92f1628',
+
+    ];
+    FileModificationService::copyExampleHttpFixture('PestTestIdentifiersFixture', json_encode($arr), true);
+
+    $fixturePath = base_path('tests/Fixtures/PestTestIdentifiersFixture.php');
+    expect(File::exists($fixturePath))->toBeTrue();
+
+    /** @phpstan-ignore-next-line */
+    $instance = new Tests\Fixtures\PestTestIdentifiersFixture;
+    /** @phpstan-ignore-next-line */
+    expect($instance)->toBeInstanceOf(Tests\Fixtures\PestTestIdentifiersFixture::class);
+
+    $definition = $instance->definition();
+    expect(strlen($definition['identifier1']))->toBe(36);
+    expect(strlen($definition['identifier2']))->toBe(10);
+    expect(strlen($definition['identifier3']))->toBe(16);
+    expect(strlen($definition['identifier4']))->toBe(27);
+    expect(strlen($definition['identifier5']))->toBe(50);
+
+    expect(getCharType($definition['identifier2'][1]))->toBe('number');
+    expect(getCharType($definition['identifier4'][2]))->toBe('symbol');
+
+    $expl = explode('-', str_replace('_', '-', $definition['identifier5']));
+    expect(count($expl))->toBe(7);
+
+    File::delete($fixturePath);
+    expect(File::exists($fixturePath))->toBeFalse();
+});

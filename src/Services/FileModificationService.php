@@ -209,8 +209,24 @@ class FileModificationService
                 return '$this->faker->numberBetween(10, 10000)';
             case is_string($value) && str_contains($value, ' '):
                 $wordCount = substr_count($value, ' ') + 1;
-
                 return '$this->faker->sentence('.$wordCount.')';
+            case  preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $value) :
+                return '$this->faker->uuid()';
+            //Has no spaces, longer than 8 characters and contains numbers, its probably identifier
+            case !str_contains(' ', $value) && strlen($value) > 8 && preg_match('/\d/', $value):
+                $regexPattern = '';
+                foreach (str_split($value) as $char) {
+                    if (ctype_digit($char)) {
+                        $regexPattern .= '[0-9]';
+                    } elseif (ctype_upper($char)) {
+                        $regexPattern .= '[A-Z]';
+                    } elseif (ctype_lower($char)) {
+                        $regexPattern .= '[a-z]';
+                    } else {
+                        $regexPattern .= preg_quote($char, '/');
+                    }
+                }
+                return '$this->faker->regexify("' . $regexPattern. '")';
             case $value === null:
                 return 'null';
             default:
@@ -233,7 +249,8 @@ class FileModificationService
             "/\)(\n[ ]*\])/m" => ']$1',
             '/^([ ]{2,})/m' => '        $1', // Add proper indentation
             // Remove quotes around faker calls
-            "/['\"]\\\$this->faker->(.*?)['\"]/" => '$this->faker->$1',
+            "/['\"]\\\$this->faker->([a-zA-Z0-9_]+)\\(([^()]*)\\)['\"]/" => '$this->faker->$1($2)',
+
             // Remove quotes around Str::random calls
             "/['\"]Str::random\((.*?)\)['\"]/" => 'Str::random($1)',
             // Remove quotes around null values

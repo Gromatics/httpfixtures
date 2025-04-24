@@ -22,7 +22,7 @@ class HttpFixture
     protected function get(): array
     {
         foreach ($this->overrides as $key => $value) {
-            if (! Arr::has($this->definition(), $key)) {
+            if (!Arr::has($this->definition(), $key)) {
                 throw new \InvalidArgumentException("The key '{$key}' is not defined in the default definition.");
             }
         }
@@ -62,7 +62,7 @@ class HttpFixture
      */
     public function toXml(string $rootElement = 'root')
     {
-        $xml = new \SimpleXMLElement('<'.$rootElement.'/>');
+        $xml = new \SimpleXMLElement('<' . $rootElement . '/>');
         $this->arrayToXml($this->get(), $xml);
 
         return $xml->asXML();
@@ -81,7 +81,7 @@ class HttpFixture
                 if (is_numeric($key)) {
                     $key = 'item'; // Handle numeric array keys
                 }
-                $xml->addChild($key, htmlspecialchars((string) $value));
+                $xml->addChild($key, htmlspecialchars((string)$value));
             }
         }
     }

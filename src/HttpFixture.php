@@ -13,6 +13,13 @@ class HttpFixture
 
     protected array $overrides;
 
+    /**
+     * Caches the rendered fixture data to ensure consistent values
+     * when multiple output methods (toArray, toJson, etc.) are called sequentially.
+     * @var array
+     */
+    protected array $renderedResponse;
+
     public function __construct(array $overrides = [])
     {
         $this->faker = Factory::create();
@@ -21,6 +28,10 @@ class HttpFixture
 
     protected function get(): array
     {
+        if (!empty($this->renderedResponse)) {
+            return $this->renderedResponse;
+        }
+
         foreach ($this->overrides as $key => $value) {
             if (!Arr::has($this->definition(), $key)) {
                 throw new \InvalidArgumentException("The key '{$key}' is not defined in the default definition.");
@@ -31,6 +42,8 @@ class HttpFixture
         foreach ($this->overrides as $key => $value) {
             Arr::set($result, $key, $value);
         }
+
+        $this->renderedResponse = $result;
 
         return $result;
     }

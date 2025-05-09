@@ -27,3 +27,8 @@ it('gets valid XML output', function () {
     $isValidXml = $dom->loadXML($xml, LIBXML_NOERROR | LIBXML_NOWARNING);
     expect($isValidXml)->toBeTrue();
 });
+
+it('should cache the rendered fixture data to ensure consistent values', function () {
+    $fixture = new ExampleHttpFixture();
+    expect($fixture->toArray()['items'][0]['name'])->toBe($fixture->toArray()['items'][0]['name']);
+});

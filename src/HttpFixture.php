@@ -22,7 +22,7 @@ class HttpFixture
 
     public function __construct(array $overrides = [])
     {
-        $this->faker = Factory::create();
+        $this->faker = app(Generator::class);
         $this->overrides = $overrides;
     }
 

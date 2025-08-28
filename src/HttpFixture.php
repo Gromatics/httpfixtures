@@ -22,7 +22,11 @@ class HttpFixture
 
     public function __construct(array $overrides = [])
     {
-        $this->faker = app(Generator::class);
+        $locale = 'en_US';
+        if (function_exists('app') && app()->bound('config')) {
+            $locale = app('config')->get('app.faker_locale', 'en_US');
+        }
+        $this->faker = Factory::create($locale);
         $this->overrides = $overrides;
     }
 
